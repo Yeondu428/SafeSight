@@ -75,9 +75,4 @@ YOLO로 바운딩 박스 위치 표시
 | 13주 | 예외처리 및 시스템 안정화 |
 | 14주 | 최종 데모 리허설 |
 | 16주 | 최종 발표 및 제출 |
-"""
 
-with open('README.md', 'w', encoding='utf-8') as f:
-    f.write(readme_content)
-
-print("✅ README.md 작성 완료!")
