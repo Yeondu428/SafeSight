@@ -19,7 +19,6 @@
 | 민지영 | 데이터 수집 / YOLO Detection |
 
 ## 📁 프로젝트 구조
-\`\`\`
 SafeSight/
   📁 notebooks/
     📓 00_setup.ipynb            # 환경 세팅
@@ -40,10 +39,9 @@ SafeSight/
   📁 app/                        # Streamlit 웹앱
     📄 app.py
   📄 requirements.txt
-\`\`\`
 
 ## 🚀 파이프라인
-\`\`\`
+
 사용자 텍스트 입력 ("흰색 말티즈 빨간 목줄")
         ↓
 CLIP 텍스트 인코더 → 512차원 벡터
@@ -53,7 +51,7 @@ FAISS DB에서 유사도 검색
 YOLO로 바운딩 박스 위치 표시
         ↓
 유사도 순 상위 5개 결과 출력
-\`\`\`
+
 
 ## 📊 데이터셋
 - 국가동물보호시스템 API (유기동물 공고 이미지 + 특징 텍스트)
