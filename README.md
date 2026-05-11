@@ -20,36 +20,44 @@
 
 ## 📁 프로젝트 구조
 SafeSight/
-  📁 notebooks/
-    📓 00_setup.ipynb            # 환경 세팅
-    📓 01_data_collection.ipynb  # 데이터 수집 (민지영)
-    📓 02_data_preprocess.ipynb  # 데이터 전처리 (민지영)
-    📓 03_yolo_train.ipynb       # YOLO 학습 (민지영)
-    📓 04_clip_embedding.ipynb   # CLIP 임베딩 DB 구축 (연주)
-    📓 05_clip_search.ipynb      # 텍스트 검색 (연주)
-    📓 06_evaluation.ipynb       # 성능 평가 (공통)
-  📁 data/
-    📁 raw/                      # 원본 데이터
-    📁 yolo/                     # YOLO 학습용
-      📁 images/train val test
-      📁 labels/train val test
-      📄 dataset.yaml
-    📁 embeddings/               # CLIP 벡터 저장
-  📁 models/                     # 학습된 가중치
-  📁 app/                        # Streamlit 웹앱
-    📄 app.py
-  📄 requirements.txt
+├── 📁 notebooks/
+│   ├── 00_setup.ipynb             # 환경 세팅
+│   ├── 01_data_collection.ipynb   # 데이터 수집 (민지영)
+│   ├── 02_data_preprocess.ipynb   # 데이터 전처리 (민지영)
+│   ├── 03_yolo_train.ipynb        # YOLO 학습 (민지영)
+│   ├── 04_clip_embedding.ipynb    # CLIP 임베딩 DB 구축 (연주)
+│   ├── 05_clip_search.ipynb       # 텍스트 검색 (연주)
+│   └── 06_evaluation.ipynb        # 성능 평가 (공통)
+├── 📁 data/
+│   ├── raw/                       # 원본 데이터
+│   ├── yolo/                      # YOLO 학습용
+│   │   ├── images/
+│   │   │   ├── train/
+│   │   │   ├── val/
+│   │   │   └── test/
+│   │   ├── labels/
+│   │   │   ├── train/
+│   │   │   ├── val/
+│   │   │   └── test/
+│   │   └── dataset.yaml
+│   └── embeddings/                # CLIP 벡터 저장
+├── 📁 models/                     # 학습된 가중치
+├── 📁 app/
+│   └── app.py                     # Streamlit 웹앱
+├── 📄 requirements.txt
+├── 📄 README.md
+└── 📄 .gitignore
 
 ## 🚀 파이프라인
 
 사용자 텍스트 입력 ("흰색 말티즈 빨간 목줄")
-        ↓
+↓
 CLIP 텍스트 인코더 → 512차원 벡터
-        ↓
+↓
 FAISS DB에서 유사도 검색
-        ↓
+↓
 YOLO로 바운딩 박스 위치 표시
-        ↓
+↓
 유사도 순 상위 5개 결과 출력
 
 
