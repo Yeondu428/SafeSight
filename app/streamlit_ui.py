@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1MIKmoRPMm8DhgmCKIpodv4r9Oun48ELv
 """
 
-import sys
-!{sys.executable} -m pip install streamlit
 import streamlit as st
 from PIL import Image
 import random
@@ -17,7 +15,7 @@ st.set_page_config(
     page_title="SafeSight",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
