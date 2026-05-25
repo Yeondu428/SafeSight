@@ -216,3 +216,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# 데이터 파일
+data/raw/images/
+data/embeddings/
+*.faiss
+*.npy
+
+# 모델 가중치
+*.pt
+*.pth
+*.onnx
+runs/
+
+# API 키
+secrets.py
+config.py
