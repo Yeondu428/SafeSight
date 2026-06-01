@@ -12,10 +12,10 @@ st.set_page_config(page_title="SafeSight", page_icon="🎯", layout="wide")
 
 @st.cache_resource
 def load_integrated_assets():
-    # 1. 지영님의 YOLOv8 동물 탐지 가중치 로드
+    # 1. YOLOv8 동물 탐지 가중치 로드
     yolo = YOLO('models/best.pt') 
     
-    # 2. 친구분이 세팅한 멀티모달 CLIP 모델 및 전처리기 로드
+    # 2. 멀티모달 CLIP 모델 및 전처리기 로드
     clip = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     
@@ -61,7 +61,7 @@ with col2:
         st.image(input_image, caption="📷 사용자가 업로드한 원본 사진", use_container_width=True)
         
         # ------------------------------------------
-        # [3단계] 지영님의 YOLO 가동 ➔ 동물 영역만 싹둑 자르기(Crop)
+        # [3단계] YOLO 가동 ➔ 동물 영역만 싹둑 자르기(Crop)
         # ------------------------------------------
         yolo_results = yolo_model(input_image, verbose=False)
         boxes = yolo_results[0].boxes
@@ -80,7 +80,7 @@ with col2:
             st.image(cropped_img.resize((224, 224)), caption="✂️ YOLO가 크롭한 전처리 영역 (224x224)", width=224)
             
         # ------------------------------------------
-        # [4단계] 친구분의 CLIP 가동 ➔ 시각 지문 생성 및 통합 DB 대조
+        # [4단계] CLIP 가동 ➔ 시각 지문 생성 및 통합 DB 대조
         # ------------------------------------------
         if text_query:
             with st.spinner("🔄 통합 벡터 데이터베이스 내 텍스트/이미지 대조 중..."):
