@@ -5,58 +5,64 @@ from PIL import Image
 from ultralytics import YOLO
 from transformers import CLIPProcessor, CLIPModel
 
-# 1. 페이지 설정
+# ==========================================
+# [1단계] AI 모델 및 이기종 데이터베이스(강아지+고양이) 통합 로드
+# ==========================================
 st.set_page_config(page_title="SafeSight", page_icon="🎯", layout="wide")
 
-# 2. AI 모델 및 통합 벡터 데이터베이스 로드
 @st.cache_resource
-def load_assets():
-    # 강아지를 학습했던 YOLO 모델 로드
+def load_integrated_assets():
+    # 1. 지영님의 YOLOv8 동물 탐지 가중치 로드
     yolo = YOLO('models/best.pt') 
     
-    # 멀티모달 CLIP 모델 로드
+    # 2. 친구분이 세팅한 멀티모달 CLIP 모델 및 전처리기 로드
     clip = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     
-    # [💡 핵심] 강아지와 고양이 데이터베이스를 각각 로드하여 하나로 합치기!
-    # 기존에 가지고 계시던 강아지 npy 파일명에 맞게 shelter 부분을 수정하셔도 됩니다.
+    # 3. 각각 추출한 강아지 DB와 고양이 DB 로드
     dog_embeds = np.load('models/shelter_embeddings.npy') 
     dog_paths = np.load('models/shelter_paths.npy')
     
     cat_embeds = np.load('models/cat_embeddings.npy')
     cat_paths = np.load('models/cat_paths.npy')
     
-    # 수학적으로 두 행렬을 하나로 병합 (통합 벡터 DB 구축)
+    # 🌟 [수학적 통합] 두 동물 데이터를 하나로 세로 병합(vstack/concatenate)
     total_embeddings = np.vstack([dog_embeds, cat_embeds])
     total_paths = np.concatenate([dog_paths, cat_paths])
     
     return yolo, clip, processor, total_embeddings, total_paths
 
+# 자산 로드 실행
 try:
-    yolo_model, clip_model, clip_processor, total_embeds, total_paths = load_assets()
+    yolo_model, clip_model, clip_processor, total_embeds, total_paths = load_integrated_assets()
 except Exception as e:
-    st.error(f"⚠️ 에러 발생: {e}. 깃허브 models/ 폴더에 npy 파일들과 best.pt가 모두 있는지 확인해주세요.")
+    st.error(f"⚠️ 파일 로드 실패: {e}\nmodels/ 폴더 안에 best.pt와 강아지/고양이 npy 파일들이 모두 제대로 들어있는지 확인해주세요.")
 
-# 3. UI 화면 구성
-st.title("🎯 SafeSight - AI 유기동물 매칭 시스템")
-st.write("강아지 2만 장의 지식과 새로운 고양이 데이터베이스가 통합된 버전입니다.")
+# ==========================================
+# [2단계] 사용자 인터페이스 (UI 화면 디자인)
+# ==========================================
+st.title("🎯 SafeSight - AI 유기동물 통합 매칭 시스템")
+st.write("YOLOv8의 객체 추적 기술과 CLIP의 멀티모달 매칭 기술을 결합하여 유기동물을 실시간으로 찾아냅니다.")
 st.markdown("---")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("🕵️‍♂️ 발견한 동물 이미지 업로드")
-    uploaded_file = st.file_uploader("보호소나 길가에서 발견한 동물 사진을 올려주세요", type=["jpg", "jpeg", "png"])
-    text_query = st.text_input("찾고자 하는 전단지 속 특징 키워드 입력", placeholder="예: 삼색 고양이, 갈색 푸들, 빨간 목줄")
+    st.subheader("🕵️‍♂️ 발견동물 정보 입력")
+    # 이미지 업로드 및 텍스트 키워드 동시 입력창
+    uploaded_file = st.file_uploader("발견하거나 보호 중인 동물 사진을 업로드하세요", type=["jpg", "jpeg", "png"])
+    text_query = st.text_input("전단지 정보 혹은 특징 키워드 입력", placeholder="예: 삼색 고양이, 갈색 푸들, 흰색 말티즈")
 
 with col2:
-    st.subheader("📊 AI 객체 크롭 및 멀티모달 분석 결과")
+    st.subheader("📊 AI 모델 연산 및 매칭 결과")
     
     if uploaded_file is not None:
         input_image = Image.open(uploaded_file).convert("RGB")
-        st.image(input_image, caption="원본 발견 이미지", use_container_width=True)
+        st.image(input_image, caption="📷 사용자가 업로드한 원본 사진", use_container_width=True)
         
-        # YOLO 실시간 전처리 크롭
+        # ------------------------------------------
+        # [3단계] 지영님의 YOLO 가동 ➔ 동물 영역만 싹둑 자르기(Crop)
+        # ------------------------------------------
         yolo_results = yolo_model(input_image, verbose=False)
         boxes = yolo_results[0].boxes
         cropped_img = None
@@ -69,23 +75,28 @@ with col2:
         
         if cropped_img is None:
             cropped_img = input_image
-            st.info("💡 특정 구역이 크롭되지 않아 원본 전체 구역을 분석합니다.")
+            st.info("💡 YOLO가 특정 동물 영역을 감지하지 못해 원본 이미지 전체로 분석합니다.")
         else:
-            st.image(cropped_img.resize((224, 224)), caption="YOLO가 전처리한 영역", width=224)
+            st.image(cropped_img.resize((224, 224)), caption="✂️ YOLO가 크롭한 전처리 영역 (224x224)", width=224)
             
-        # 특징 매칭 연산
+        # ------------------------------------------
+        # [4단계] 친구분의 CLIP 가동 ➔ 시각 지문 생성 및 통합 DB 대조
+        # ------------------------------------------
         if text_query:
-            with st.spinner("통합 벡터 데이터베이스 대조 중..."):
+            with st.spinner("🔄 통합 벡터 데이터베이스 내 텍스트/이미지 대조 중..."):
                 inputs = clip_processor(images=cropped_img.resize((224, 224)), return_tensors="pt")
+                
                 with torch.no_grad():
                     query_features = clip_model.get_image_features(**inputs)
                     query_features = query_features / query_features.norm(dim=-1, keepdim=True)
                     query_np = query_features.cpu().numpy()[0]
                 
-                # 코사인 유사도 연산으로 통합 DB에서 매칭 확률 계산
+                # 병합된 total_embeds와 행렬 내적(Dot Product) 연산으로 코사인 유사도 계산
                 similarities = np.dot(total_embeds, query_np)
                 max_idx = np.argmax(similarities)
-                match_prob = similarities[max_idx] * 100
+                match_prob = similarities[max_idx] * 100 
                 
-                st.success(f"📈 매칭 완료! 입력하신 특징과 가장 유사한 동물의 일치율: **{match_prob:.2f}%**")
-                st.write(f"📂 매칭된 보호소 파일 경로: `{total_paths[max_idx]}`")
+                # 최종 웹 화면 출력
+                st.success(f"📈 매칭 완료! 입력한 특징과 가장 일치하는 동물 발견!")
+                st.metric(label="최고 유사도 일치율", value=f"{match_prob:.2f}%")
+                st.info(f"📂 보호소 통합 데이터 매칭 경로: \n`{total_paths[max_idx]}`")
