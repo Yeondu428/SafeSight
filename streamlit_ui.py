@@ -6,40 +6,45 @@ from ultralytics import YOLO
 from transformers import CLIPProcessor, CLIPModel
 
 # ==========================================
-# [1단계] AI 모델 및 이기종 데이터베이스(강아지+고양이) 통합 로드
+# [안정화 1단계] 웹페이지 기본 레이아웃 및 세션 설정
 # ==========================================
 st.set_page_config(page_title="SafeSight", page_icon="🎯", layout="wide")
 
+# 리소스 캐싱을 통해 사용자가 클릭할 때마다 모델이 재로드되어 느려지는 현상 방지
 @st.cache_resource
 def load_integrated_assets():
-    # 1. YOLOv8 동물 탐지 가중치 로드
-    yolo = YOLO('models/best.pt') 
-    
-    # 2. 멀티모달 CLIP 모델 및 전처리기 로드
-    clip = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    
-    # 3. 각각 추출한 강아지 DB와 고양이 DB 로드
-    dog_embeds = np.load('models/shelter_embeddings.npy') 
-    dog_paths = np.load('models/shelter_paths.npy')
-    
-    cat_embeds = np.load('models/cat_embeddings.npy')
-    cat_paths = np.load('models/cat_paths.npy')
-    
-    # 🌟 [수학적 통합] 두 동물 데이터를 하나로 세로 병합(vstack/concatenate)
-    total_embeddings = np.vstack([dog_embeds, cat_embeds])
-    total_paths = np.concatenate([dog_paths, cat_paths])
-    
-    return yolo, clip, processor, total_embeddings, total_paths
+    try:
+        # 1. YOLOv8 동물 탐지 가중치 로드
+        yolo = YOLO('models/best.pt') 
+        
+        # 2. 멀티모달 CLIP 모델 및 전처리기 로드
+        clip = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        
+        # 3. 각각 추출한 강아지/고양이 DB 로드
+        dog_embeds = np.load('models/shelter_embeddings.npy') 
+        dog_paths = np.load('models/shelter_paths.npy')
+        
+        cat_embeds = np.load('models/cat_embeddings.npy')
+        cat_paths = np.load('models/cat_paths.npy')
+        
+        # [수학적 통합] 두 동물 데이터를 하나로 병합
+        total_embeddings = np.vstack([dog_embeds, cat_embeds])
+        total_paths = np.concatenate([dog_paths, cat_paths])
+        
+        return yolo, clip, processor, total_embeddings, total_paths
+    except FileNotFoundError as e:
+        st.error(f"📂 [파일 로드 실패] models/ 폴더 안에 필수 파일(best.pt, npy 파일들)이 모두 들어있는지 확인해주세요. 에러 내용: {e}")
+        st.stop()
+    except Exception as e:
+        st.error(f"❌ [시스템 에러] AI 모델 자산을 불러오는 중 오류가 발생했습니다: {e}")
+        st.stop()
 
-# 자산 로드 실행
-try:
-    yolo_model, clip_model, clip_processor, total_embeds, total_paths = load_integrated_assets()
-except Exception as e:
-    st.error(f"⚠️ 파일 로드 실패: {e}\nmodels/ 폴더 안에 best.pt와 강아지/고양이 npy 파일들이 모두 제대로 들어있는지 확인해주세요.")
+# 파일 로드 실행
+yolo_model, clip_model, clip_processor, total_embeds, total_paths = load_integrated_assets()
 
 # ==========================================
-# [2단계] 사용자 인터페이스 (UI 화면 디자인)
+# [안정화 2단계] UI 화면 디자인
 # ==========================================
 st.title("🎯 SafeSight - AI 유기동물 통합 매칭 시스템")
 st.write("YOLOv8의 객체 추적 기술과 CLIP의 멀티모달 매칭 기술을 결합하여 유기동물을 실시간으로 찾아냅니다.")
@@ -49,54 +54,74 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("🕵️‍♂️ 발견동물 정보 입력")
-    # 이미지 업로드 및 텍스트 키워드 동시 입력창
+    
+    # [안정화] 이미지 파일 확장자 제한 필터링
     uploaded_file = st.file_uploader("발견하거나 보호 중인 동물 사진을 업로드하세요", type=["jpg", "jpeg", "png"])
+    
+    # [안정화] 검색어 인풋창 가이드 제공
     text_query = st.text_input("전단지 정보 혹은 특징 키워드 입력", placeholder="예: 삼색 고양이, 갈색 푸들, 흰색 말티즈")
+    
+    # 텍스트와 사진 중 하나라도 누락되었을 때 띄워줄 방어 안내 멘트
+    if uploaded_file is None:
+        st.info("📸 매칭 연산을 시작하려면 먼저 고양이 또는 강아지 사진을 업로드해 주세요.")
+    elif not text_query:
+        st.warning("✍️ 더 정확한 대조를 위해 사진 속 동물의 특징 키워드(예: 고등어 태비)를 입력해 주세요.")
 
 with col2:
     st.subheader("📊 AI 모델 연산 및 매칭 결과")
     
     if uploaded_file is not None:
-        input_image = Image.open(uploaded_file).convert("RGB")
-        st.image(input_image, caption="📷 사용자가 업로드한 원본 사진", use_container_width=True)
+        # [안정화] 손상된 이미지 파일 입력 시 예외 처리
+        try:
+            input_image = Image.open(uploaded_file).convert("RGB")
+            st.image(input_image, caption="📷 사용자가 업로드한 원본 사진", use_container_width=True)
+        except Exception:
+            st.error("🚨 읽을 수 없는 이미지 파일입니다. 깨지지 않은 정상 이미지를 다시 올려주세요.")
+            st.stop()
         
         # ------------------------------------------
-        # [3단계] YOLO 가동 ➔ 동물 영역만 싹둑 자르기(Crop)
+        # [안정화 3단계] 지영님의 YOLO 가동 (로딩 바 레이아웃 분리)
         # ------------------------------------------
-        yolo_results = yolo_model(input_image, verbose=False)
-        boxes = yolo_results[0].boxes
-        cropped_img = None
+        with st.spinner("🕵️‍♂️ YOLOv8 모델이 이미지에서 동물 영역을 정밀 탐색 중입니다..."):
+            yolo_results = yolo_model(input_image, verbose=False)
+            boxes = yolo_results[0].boxes
+            cropped_img = None
+            
+            for box in boxes:
+                if float(box.conf[0]) >= 0.4:  # 신뢰도 40% 이상만 크롭
+                    xyxy = box.xyxy[0].tolist()
+                    cropped_img = input_image.crop((int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])))
+                    break
         
-        for box in boxes:
-            if float(box.conf[0]) >= 0.4:
-                xyxy = box.xyxy[0].tolist()
-                cropped_img = input_image.crop((int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])))
-                break
-        
+        # [안정화] YOLO가 동물을 찾지 못했을 때 멈추지 않고 원본으로 우회하는 예외 처리
         if cropped_img is None:
             cropped_img = input_image
-            st.info("💡 YOLO가 특정 동물 영역을 감지하지 못해 원본 이미지 전체로 분석합니다.")
+            st.info("💡 YOLO가 특정 동물 구역을 감지하지 못해 원본 전체 영역으로 분석을 진행합니다.")
         else:
-            st.image(cropped_img.resize((224, 224)), caption="✂️ YOLO가 크롭한 전처리 영역 (224x224)", width=224)
+            st.image(cropped_img.resize((224, 224)), caption="✂️ YOLO 정밀 크롭 완료 (224x224)", width=224)
             
         # ------------------------------------------
-        # [4단계] CLIP 가동 ➔ 시각 지문 생성 및 통합 DB 대조
+        # [안정화 4단계] 친구분의 CLIP 가동 및 최종 매칭
         # ------------------------------------------
         if text_query:
-            with st.spinner("🔄 통합 벡터 데이터베이스 내 텍스트/이미지 대조 중..."):
-                inputs = clip_processor(images=cropped_img.resize((224, 224)), return_tensors="pt")
-                
-                with torch.no_grad():
-                    query_features = clip_model.get_image_features(**inputs)
-                    query_features = query_features / query_features.norm(dim=-1, keepdim=True)
-                    query_np = query_features.cpu().numpy()[0]
-                
-                # 병합된 total_embeds와 행렬 내적(Dot Product) 연산으로 코사인 유사도 계산
-                similarities = np.dot(total_embeds, query_np)
-                max_idx = np.argmax(similarities)
-                match_prob = similarities[max_idx] * 100 
-                
-                # 최종 웹 화면 출력
-                st.success(f"📈 매칭 완료! 입력한 특징과 가장 일치하는 동물 발견!")
-                st.metric(label="최고 유사도 일치율", value=f"{match_prob:.2f}%")
-                st.info(f"📂 보호소 통합 데이터 매칭 경로: \n`{total_paths[max_idx]}`")
+            with st.spinner("🔄 통합 벡터 데이터베이스 내 대용량 특징 행렬 대조 중..."):
+                try:
+                    inputs = clip_processor(images=cropped_img.resize((224, 224)), return_tensors="pt")
+                    
+                    with torch.no_grad():
+                        query_features = clip_model.get_image_features(**inputs)
+                        query_features = query_features / query_features.norm(dim=-1, keepdim=True)
+                        query_np = query_features.cpu().numpy()[0]
+                    
+                    # 통합 DB 코사인 유사도 연산
+                    similarities = np.dot(total_embeds, query_np)
+                    max_idx = np.argmax(similarities)
+                    match_prob = similarities[max_idx] * 100 
+                    
+                    # [안정화] 매칭 유사도 결과 출력 및 하이라이트 제공
+                    st.success("📈 통합 데이터베이스 매칭 성공!")
+                    st.metric(label="최고 유사도 일치율", value=f"{match_prob:.2f}%")
+                    st.info(f"📂 매칭된 보호소 파일 경로: \n`{total_paths[max_idx]}`")
+                    
+                except Exception as e:
+                    st.error(f"❌ 매칭 연산 중 오류가 발생했습니다: {e}")
