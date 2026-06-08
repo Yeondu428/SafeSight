@@ -483,6 +483,27 @@ with main_col:
             with cols[i]:
                 badge_cls = "high" if item["score"] >= 90 else "mid" if item["score"] >= 80 else "low"
                 
+                # ------ [🔥 튜플 구조 불일치 에러 완벽 방어 시작] ------
+                tags_list = []
+                if "tags" in item and item["tags"]:
+                    for tag in item["tags"]:
+                        # MOCK 데이터처럼 요소가 6개 등 여러 개 들어있는 튜플일 때
+                        if isinstance(tag, (list, tuple)) and len(tag) > 2:
+                            valid_tags = [str(x) for x in tag if str(x).strip() and str(x) not in ["acc", "loc"]]
+                            for vt in valid_tags:
+                                tags_list.append(f'<span class="rtag">{vt}</span>')
+                        # 정상적인 2개짜리 (텍스트, 클래스) 구조일 때
+                        elif isinstance(tag, (list, tuple)) and len(tag) == 2:
+                            t, cls = tag
+                            tags_list.append(f'<span class="rtag {cls}">{t}</span>')
+                        # 그냥 일반 텍스트만 들어있을 때
+                        elif isinstance(tag, str):
+                            tags_list.append(f'<span class="rtag">{tag}</span>')
+                tags_html = "".join(tags_list)
+                # ------ [🔥 튜플 구조 불일치 에러 완벽 방어 끝] ------
+                
+                bar_w = item["score"]
+                
                 # ------ [🔥 튜플 개수 불일치 에러 방어 구역 시작] ------
                 tags_list = []
                 if "tags" in item and item["tags"]:
