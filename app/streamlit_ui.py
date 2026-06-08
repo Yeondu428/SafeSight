@@ -10,6 +10,7 @@ Original file is located at
 import streamlit as st
 from PIL import Image
 import random
+import torch
 
 st.set_page_config(
     page_title="SafeSight",
