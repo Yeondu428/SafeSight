@@ -477,15 +477,34 @@ with main_col:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Result cards as columns
+# Result cards as columns
         cols = st.columns(3)
         for i, item in enumerate(MOCK):
             with cols[i]:
                 badge_cls = "high" if item["score"] >= 90 else "mid" if item["score"] >= 80 else "low"
-                tags_html = "".join(
-                    f'<span class="rtag {cls}">{t}</span>' for t, cls in item["tags"]
-                )
+                
+                # ------ [🔥 튜플 개수 불일치 에러 방어 구역 시작] ------
+                tags_list = []
+                if "tags" in item and item["tags"]:
+                    for tag in item["tags"]:
+                        # 친구분이 작성한 MOCK처럼 원소가 6개짜리 튜플일 때 처리
+                        if isinstance(tag, (list, tuple)) and len(tag) > 2:
+                            # 의미 있는 텍스트만 추출해서 rtag로 감싸기
+                            valid_tags = [str(x) for x in tag if str(x).strip() and str(x) not in ["acc", "loc"]]
+                            for vt in valid_tags:
+                                tags_list.append(f'<span class="rtag">{vt}</span>')
+                        # 정상적인 2개짜리 (텍스트, 클래스) 구조일 때
+                        elif isinstance(tag, (list, tuple)) and len(tag) == 2:
+                            t, cls = tag
+                            tags_list.append(f'<span class="rtag {cls}">{t}</span>')
+                        # 그냥 문자열 하나만 들어있을 때
+                        elif isinstance(tag, str):
+                            tags_list.append(f'<span class="rtag">{tag}</span>')
+                tags_html = "".join(tags_list)
+                # ------ [🔥 튜플 개수 불일치 에러 방어 구역 끝] ------
+                
                 bar_w = item["score"]
+
                 st.markdown(f"""
                 <div class="result-card">
                   <div class="result-img">
