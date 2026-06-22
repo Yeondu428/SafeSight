@@ -20,13 +20,14 @@
 
 ### 실행 화면
 
-2.[메인 화면]<img width="329" height="347" alt="검색화면" src="https://github.com/user-attachments/assets/859471c9-c813-4bc5-8d7f-fb5c5f1036c0" />
+1.메인 화면<img width="329" height="347" alt="검색화면" src="https://github.com/user-attachments/assets/859471c9-c813-4bc5-8d7f-fb5c5f1036c0" />
 
-2.[검색 결과 화면]<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />
+2.검색 결과 화면<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />
 
 ## 프로젝트 흐름
 사용자 텍스트 쿼리 → CLIP Text Encoder → 벡터 변환 → FAISS Vector DB 내 이미지 벡터와 코사인 유사도 비교 → 가장 유사도가 높은 유기동물 이미지 출력  
 (이미지 입력 시) 업로드 이미지 → YOLOv8 반려동물 크롭 → CLIP Image Encoder → 동일 파이프라인
+<br>
 
 ## 역할 분담
 - 신연주
@@ -55,12 +56,12 @@
 - **ultralytics** — YOLOv8 반려동물 탐지
 - **faiss-gpu** — 이미지 임베딩 유사도 검색
 - **pandas**, **numpy**, **pillow** — 데이터 처리 및 이미지 가공
-
+<br>
 ## 상세 설치/실행 방법
 
 ### 사전 준비
 - 모델 가중치 및 FAISS 인덱스 파일은 Google Drive를 통해 제공됩니다.
-- Drive 링크: [Google Drive 링크 추가 예정]
+- Drive 링크: https://drive.google.com/drive/folders/1BtKvOQV_7EWx5AhCrFxW-X-OoMS-yjGe?usp=share_link
 
 ### 실행 방법
 
@@ -71,7 +72,6 @@
 
 2. 드라이브에서 다음 파일/폴더 다운로드: `faiss_index`, `metadata.csv`, `clip_lora_augmentation`,
 
-   https://drive.google.com/drive/folders/1BtKvOQV_7EWx5AhCrFxW-X-OoMS-yjGe?usp=share_link
    ```
 - faiss_index/, metadata.csv → 프로젝트 루트에 위치
 - lora_weights/ → models에 위치
@@ -101,7 +101,7 @@
 6. 웹 화면에서 자연어로 반려동물 외형을 입력한 후 **검색하기** 버튼 클릭
 
 7. 검색 결과가 표시되면 유사도 순으로 유기동물 이미지가 출력됨. 강아지/고양이 필터 버튼으로 종류 구분 가능
-
+<br>
 ## 데이터 파이프라인
 
 ```mermaid
