@@ -73,16 +73,16 @@
    git clone https://github.com/Yeondu428/SafeSight.git
    ```
 
-2. 드라이브에서 다음 파일/폴더 다운로드: `faiss_index`, `metadata.csv`, `clip_lora_augmentation`,
+2. 드라이브에서 다음 파일/폴더 다운로드: `image_index.faiss`, `index_map.csv`, `metadata.csv`, `clip_lora_augmentation`, `best.pt`, `images/`
 
-  ```
-- faiss_index/, metadata.csv → 프로젝트 루트에 위치
-- lora_weights/ → models에 위치
-- yolo_weights/best.pt → models/yolo_weights에 위치
-- raw 이미지 4,000장 → data/raw에 위치 (검색 결과 화면 출력에 필요)
-   ```
+   - `data/embeddings/image_index.faiss` → `data/embeddings/`에 위치
+   - `data/embeddings/index_map.csv` → `data/embeddings/`에 위치
+   - `data/raw/metadata.csv` → `data/raw/`에 위치
+   - `models/clip_lora_augmentation/` → `models/clip_lora_augmentation/`에 위치
+   - `models/best.pt` → `models/`에 위치
+   - `data/raw/images/` → `data/raw/images/`에 위치 (검색 결과 화면 출력에 필요, 약 700MB)
 
-3. 가상환경 생성 및 활성화
+4. 가상환경 생성 및 활성화
    ```bash
    python -m venv venv
    # Windows
@@ -91,19 +91,19 @@
    source venv/bin/activate
    ```
 
-4. 패키지 설치
+5. 패키지 설치
    ```bash
    pip install -r requirements.txt
    ```
 
-5. 앱 실행
+6. 앱 실행
    ```bash
    streamlit run app.py
    ```
 
-6. 웹 화면에서 자연어로 반려동물 외형을 입력한 후 **검색하기** 버튼 클릭
+7. 웹 화면에서 자연어로 반려동물 외형을 입력한 후 **검색하기** 버튼 클릭
 
-7. 검색 결과가 표시되면 유사도 순으로 유기동물 이미지가 출력됨. 강아지/고양이 필터 버튼으로 종류 구분 가능
+8. 검색 결과가 표시되면 유사도 순으로 유기동물 이미지가 출력됨. 강아지/고양이 필터 버튼으로 종류 구분 가능
 <br>
 
 ##다운로드 필요 파일
@@ -116,7 +116,6 @@
 |--------|------|------|------|
 | `image_index.faiss` | `data/embeddings/` | 7.7MB | FAISS 벡터 인덱스 (이미지 임베딩 DB) |
 | `index_map.csv` | `data/embeddings/` | 61.7KB | FAISS 인덱스와 Pet ID 매핑 테이블 |
-| `metadata.csv` | `data/raw/` | 1.0MB | 유기동물 메타데이터 (종, 색상, 성별 등) |
 | `images/` | `data/raw/` | 약 700MB | 유기동물 원본 이미지 4,000장 (검색 결과 출력에 필요) |
 | `adapter_model.safetensors` | `models/clip_lora_augmentation/` | 16.5MB | 최종 LoRA 파인튜닝 가중치 |
 | `best.pt` | `models/` | 6.6MB | YOLOv8 반려동물 탐지 가중치 |
