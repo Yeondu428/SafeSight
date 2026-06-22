@@ -20,9 +20,11 @@
 
 ### 실행 화면
 
-1.메인 화면<img width="329" height="347" alt="검색화면" src="https://github.com/user-attachments/assets/859471c9-c813-4bc5-8d7f-fb5c5f1036c0" />
+1.메인 화면
+<img width="329" height="347" alt="검색화면" src="https://github.com/user-attachments/assets/859471c9-c813-4bc5-8d7f-fb5c5f1036c0" />
 
-2.검색 결과 화면<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />
+2.검색 결과 화면
+<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />
 
 ## 프로젝트 흐름
 사용자 텍스트 쿼리 → CLIP Text Encoder → 벡터 변환 → FAISS Vector DB 내 이미지 벡터와 코사인 유사도 비교 → 가장 유사도가 높은 유기동물 이미지 출력  
@@ -56,7 +58,7 @@
 - **ultralytics** — YOLOv8 반려동물 탐지
 - **faiss-gpu** — 이미지 임베딩 유사도 검색
 - **pandas**, **numpy**, **pillow** — 데이터 처리 및 이미지 가공
-<br>
+
 ## 상세 설치/실행 방법
 
 ### 사전 준비
@@ -72,7 +74,7 @@
 
 2. 드라이브에서 다음 파일/폴더 다운로드: `faiss_index`, `metadata.csv`, `clip_lora_augmentation`,
 
-   ```
+  ```
 - faiss_index/, metadata.csv → 프로젝트 루트에 위치
 - lora_weights/ → models에 위치
 - yolo_weights/best.pt → models/yolo_weights에 위치
