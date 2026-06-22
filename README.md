@@ -105,6 +105,22 @@
 
 7. 검색 결과가 표시되면 유사도 순으로 유기동물 이미지가 출력됨. 강아지/고양이 필터 버튼으로 종류 구분 가능
 <br>
+
+##다운로드 필요 파일
+
+앱 실행을 위해 아래 파일들을 Google Drive에서 다운로드해야 합니다.
+
+드라이브 링크: [Google Drive 링크 추가 예정]
+
+| 파일명 | 위치 | 용량 | 설명 |
+|--------|------|------|------|
+| `image_index.faiss` | `data/embeddings/` | 7.7MB | FAISS 벡터 인덱스 (이미지 임베딩 DB) |
+| `index_map.csv` | `data/embeddings/` | 61.7KB | FAISS 인덱스와 Pet ID 매핑 테이블 |
+| `metadata.csv` | `data/raw/` | 1.0MB | 유기동물 메타데이터 (종, 색상, 성별 등) |
+| `images/` | `data/raw/` | 약 700MB | 유기동물 원본 이미지 4,000장 (검색 결과 출력에 필요) |
+| `adapter_model.safetensors` | `models/clip_lora_augmentation/` | 16.5MB | 최종 LoRA 파인튜닝 가중치 |
+| `best.pt` | `models/` | 6.6MB | YOLOv8 반려동물 탐지 가중치 |
+
 ## 데이터 파이프라인
 
 ```mermaid
