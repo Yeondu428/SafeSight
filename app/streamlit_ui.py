@@ -374,4 +374,3 @@ if st.session_state.page == "main":
 
 elif st.session_state.page == "result":
     result_page()
-```
