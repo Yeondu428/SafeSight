@@ -70,7 +70,7 @@
 
 1. 레포 클론
    ```bash
-   git clone https://github.com/[GitHub 주소 추가]
+   git clone https://github.com/Yeondu428/SafeSight.git
    ```
 
 2. 드라이브에서 다음 파일/폴더 다운로드: `faiss_index`, `metadata.csv`, `clip_lora_augmentation`,
