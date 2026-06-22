@@ -97,7 +97,7 @@
 
 6. 앱 실행
    ```bash
-   streamlit run app.py
+   streamlit run streamlit_ui.py
    ```
 
 7. 웹 화면에서 자연어로 반려동물 외형을 입력한 후 **검색하기** 버튼 클릭
