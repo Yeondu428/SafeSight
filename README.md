@@ -22,7 +22,7 @@
 
 ![메인 화면]<img width="329" height="347" alt="검색화면" src="https://github.com/user-attachments/assets/859471c9-c813-4bc5-8d7f-fb5c5f1036c0" />
 
-![검색 결과 화면](<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />)
+![검색 결과 화면]<img width="279" height="283" alt="결과 화면" src="https://github.com/user-attachments/assets/59fe1999-f688-4f19-8684-53c454df468a" />
 
 ## 프로젝트 흐름
 사용자 텍스트 쿼리 → CLIP Text Encoder → 벡터 변환 → FAISS Vector DB 내 이미지 벡터와 코사인 유사도 비교 → 가장 유사도가 높은 유기동물 이미지 출력  
