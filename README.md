@@ -73,14 +73,13 @@
    git clone https://github.com/Yeondu428/SafeSight.git
    ```
 
-2. 드라이브에서 다음 파일/폴더 다운로드: `image_index.faiss`, `index_map.csv`, `metadata.csv`, `clip_lora_augmentation`, `best.pt`, `images/`
+2. 드라이브에서 다음 파일/폴더 다운로드: `image_index.faiss`, `index_map.csv`, `clip_lora_augmentation`, `best.pt`, `images/`
 
-   - `data/embeddings/image_index.faiss` → `data/embeddings/`에 위치
-   - `data/embeddings/index_map.csv` → `data/embeddings/`에 위치
-   - `data/raw/metadata.csv` → `data/raw/`에 위치
-   - `models/clip_lora_augmentation/` → `models/clip_lora_augmentation/`에 위치
-   - `models/best.pt` → `models/`에 위치
-   - `data/raw/images/` → `data/raw/images/`에 위치 (검색 결과 화면 출력에 필요, 약 700MB)
+   - `image_index.faiss` → `data/embeddings/`에 위치
+   - `index_map.csv` → `data/embeddings/`에 위치
+   - `clip_lora_augmentation/` → `models/clip_lora_augmentation/`에 위치
+   - `best.pt` → `models/`에 위치
+   - `images/` → `data/raw/images/`에 위치 (검색 결과 화면 출력에 필요, 약 700MB)
 
 4. 가상환경 생성 및 활성화
    ```bash
