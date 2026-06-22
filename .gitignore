@@ -217,7 +217,8 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# 데이터 파일 (용량 커서 깃허브에 올리지 않음)
+
+# 데이터 파일
 data/raw/images/
 data/embeddings/
 *.faiss

@@ -1,0 +1,33 @@
+# SafeSight 프로젝트 의존성 패키지
+# Python 3.12 환경 기준
+
+# ── 딥러닝 핵심 ──
+torch==2.11.0
+torchvision==0.27.0
+
+# ── CLIP 모델 및 LoRA ──
+transformers==5.12.1
+peft==0.19.1
+torchao
+
+# ── 벡터 검색 ──
+faiss-cpu==1.14.3
+
+# ── 객체 탐지 (YOLO) ──
+ultralytics
+
+# ── 웹 서비스 ──
+streamlit
+
+# ── 번역 ──
+deep-translator
+
+# ── 데이터 처리 ──
+pandas
+numpy
+Pillow
+scikit-learn
+tqdm
+
+# ── 시각화 ──
+matplotlib
