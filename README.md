@@ -134,3 +134,27 @@ flowchart LR
 | **LoRA r=16 + 데이터 증강 (최종)** | **12.0%** | **34.8%** | **47.0%** | **22.4%** |
 
 Zero-shot 대비 **R@1 +2.8%p / R@10 +8.3%p** 향상
+
+
+## 기술 스택
+
+### Web & Backend
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+### AI / ML & Vector DB
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
+![FAISS](https://img.shields.io/badge/FAISS-0467DF?style=for-the-badge&logo=meta&logoColor=white)
+
+### Data & Database
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+
+### External APIs
+![공공데이터포털](https://img.shields.io/badge/공공데이터포털_유기동물_API-007EC6?style=for-the-badge&logo=gov.uk&logoColor=white)
+
+### Management & Collaboration
+![Google Colab](https://img.shields.io/badge/Google_Colab-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=black)
+![Google Drive](https://img.shields.io/badge/Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
